@@ -10,6 +10,7 @@ Integrantes:
 				de Beruti, Nicolas Alejandro	149.700-5
 */
 #include <stdio.h>
+#include "scanner.h"
 #include "parser.h"
 
 char* token_names[] = { "Fin de Archivo" ,
@@ -28,18 +29,18 @@ char* token_names[] = { "Fin de Archivo" ,
 
 /* Informa la ocurrencia de un error. */
 void yyerror(const char *s){
-	puts(s);
+	printf("Linea #%d: %s\n", yylineno, s);
 	return;
 }
 
 int main() {
 	switch( yyparse() ){
 	case 0:
-		puts("Pertenece al LIC"); return 0;
+		printf("Compilación finalizada con éxito.\nErrores sintácticos: 0\tErrores léxicos: 0\n"); return 0;
 	case 1:
-		puts("No pertenece al LIC"); return 1;
+		printf("No pertenece al LIC"); return 1;
 	case 2:
-		puts("Memoria insuficiente"); return 2;
+		printf("Memoria insuficiente"); return 2;
 	}
 	return 0;
 }

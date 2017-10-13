@@ -1,5 +1,7 @@
 %{
     #include <stdio.h>
+    #include <string.h>
+    #include "scanner.h"
     #define YYERROR_VERBOSE
     void yyerror(const char* c);
 %}
@@ -10,7 +12,7 @@
     int ival;
     char *sval;
 }
-%token FDT IDENTIFICADOR CONSTANTE R_PROGRAMA R_VARIABLES R_DEFINIR R_CODIGO R_LEER R_ESCRIBIR R_FIN ASIGNACION PUNTUACION
+%token FDT R_PROGRAMA IDENTIFICADOR CONSTANTE R_VARIABLES R_DEFINIR R_CODIGO R_LEER R_ESCRIBIR R_FIN ASIGNACION PUNTUACION
 %type <ival> FDT
 %type <sval> IDENTIFICADOR
 %type <ival> CONSTANTE
@@ -33,39 +35,42 @@ programa : R_PROGRAMA cuerpo R_FIN;
 cuerpo : R_VARIABLES listaDefiniciones R_CODIGO listaSentencias;
 
 listaDefiniciones : definicion
-                  | definicion listaDefiniciones
+                  | listaDefiniciones definicion
                   ;
 
-definicion : R_DEFINIR IDENTIFICADOR ';';
+definicion : R_DEFINIR IDENTIFICADOR ';' { printf("definir %s\n", yytext); }
+           | error ';'
+           ;
 
 listaSentencias : sentencia
-                | sentencia listaSentencias
+                | listaSentencias sentencia 
                 ;
 
-sentencia : IDENTIFICADOR ASIGNACION expresion ';'
-          | R_LEER '(' listaIdentificadores ')' ';'
-          | R_ESCRIBIR '(' listaExpresiones ')' ';'
+sentencia : IDENTIFICADOR ASIGNACION expresion ';'  { printf("asignar\n"); }
+          | R_LEER '(' listaIdentificadores ')' ';' { printf("leer\n"); }
+          | R_ESCRIBIR '(' listaExpresiones ')' ';' { printf("escribir\n"); }
+          | error ';'
           ;
 
 listaIdentificadores : IDENTIFICADOR
-                     | IDENTIFICADOR ',' listaIdentificadores
+                     | listaIdentificadores ',' IDENTIFICADOR
                      ;
 
 listaExpresiones : expresion
-                 | expresion ',' listaExpresiones
+                 | listaExpresiones ',' expresion
                  ;
 
 expresion : termino
-          | expresion '+' termino
-          | expresion '-' termino
+          | expresion '+' termino { printf("sumar\n"); }
+          | expresion '-' termino { printf("restar\n"); }
           ;
 
 termino : factor
-        | termino '*' factor
-        | termino '/' factor
+        | termino '*' factor { printf("multiplicar\n"); }
+        | termino '/' factor { printf("dividir\n"); }
         ;
 
-factor : '-' primaria %prec NEG
+factor : '-' primaria %prec NEG { printf("invertir\n"); }
        | primaria
        ;
 
