@@ -19,9 +19,13 @@
 %token <sval> R_LEER
 %token <sval> R_ESCRIBIR
 %token <sval> R_FIN
-%token <sval> ASIGNACION
+%right <sval> ASIGNACION
 %token <ival> PUNTUACION
 %token <ival> TOPE
+
+%left '-' '+'
+%left '*' '/'
+%precedence NEG
 
 COMO SE USA %code provides {} + %define ???????
 
@@ -62,7 +66,7 @@ termino : factor
         | termino '/' factor
         ;
 
-factor : '-' primaria
+factor : '-' primaria %prec NEG
        | primaria
        ;
 
