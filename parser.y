@@ -1,6 +1,7 @@
 %{
-#include <stdio.h>
-
+    #include <stdio.h>
+    #define YYERROR_VERBOSE
+    void yyerror(const char* c);
 %}
 %defines "parser.h"
 %output "parser.c"
@@ -9,47 +10,45 @@
     int ival;
     char *sval;
 }
-%token <ival> FDT
-%token <sval> IDENTIFICADOR
-%token <ival> CONSTANTE
-%token <sval> R_PROGRAMA
-%token <sval> R_VARIABLES
-%token <sval> R_DEFINIR
-%token <sval> R_CODIGO
-%token <sval> R_LEER
-%token <sval> R_ESCRIBIR
-%token <sval> R_FIN
+%token FDT IDENTIFICADOR CONSTANTE R_PROGRAMA R_VARIABLES R_DEFINIR R_CODIGO R_LEER R_ESCRIBIR R_FIN ASIGNACION PUNTUACION
+%type <ival> FDT
+%type <sval> IDENTIFICADOR
+%type <ival> CONSTANTE
+%type <sval> R_PROGRAMA
+%type <sval> R_VARIABLES
+%type <sval> R_DEFINIR
+%type <sval> R_CODIGO
+%type <sval> R_LEER
+%type <sval> R_ESCRIBIR
+%type <sval> R_FIN
 %right <sval> ASIGNACION
-%token <ival> PUNTUACION
-%token <ival> TOPE
-
+%type <ival> PUNTUACION
 %left '-' '+'
 %left '*' '/'
 %precedence NEG
 
-COMO SE USA %code provides {} + %define ???????
-
 %%
-programa : PROGRAMA cuerpo FIN;
+programa : R_PROGRAMA cuerpo R_FIN;
 
-cuerpo : VARIABLES listaDefiniciones CODIGO listaSentencias;
+cuerpo : R_VARIABLES listaDefiniciones R_CODIGO listaSentencias;
 
 listaDefiniciones : definicion
                   | definicion listaDefiniciones
-                  ;            RESOLVER RECURSION A DERECHA? IMPORTA?
+                  ;
 
-definicion : DEFINIR identificador ';';
+definicion : R_DEFINIR IDENTIFICADOR ';';
+
 listaSentencias : sentencia
                 | sentencia listaSentencias
                 ;
 
-sentencia : identificador ':=' expresion ';'
-          | LEER '(' listaIdentificadores ')' ';'
-          | ESCRIBIR '(' listaExpresiones ')' ';'
+sentencia : IDENTIFICADOR ASIGNACION expresion ';'
+          | R_LEER '(' listaIdentificadores ')' ';'
+          | R_ESCRIBIR '(' listaExpresiones ')' ';'
           ;
 
-listaIdentificadores : identificador
-                     | identificador ',' listaIdentificadores
+listaIdentificadores : IDENTIFICADOR
+                     | IDENTIFICADOR ',' listaIdentificadores
                      ;
 
 listaExpresiones : expresion
@@ -70,9 +69,9 @@ factor : '-' primaria %prec NEG
        | primaria
        ;
 
-primaria : identificador
-         | constante
+primaria : IDENTIFICADOR
+         | CONSTANTE
          | '(' expresion ')'
          ;
+
 %%
-Epílogo
