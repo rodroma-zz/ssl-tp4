@@ -38,7 +38,7 @@ int main() {
 	case 0:
 		printf("Compilación finalizada con éxito.\nErrores sintácticos: 0\tErrores léxicos: 0\n"); return 0;
 	case 1:
-		printf("No pertenece al LIC"); return 1;
+		printf("Errores de compilación\nErrores sintácticos: 0\tErrores léxicos: 0\n"); return 1;
 	case 2:
 		printf("Memoria insuficiente"); return 2;
 	}
