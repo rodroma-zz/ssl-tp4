@@ -13,36 +13,14 @@ Integrantes:
 #include "scanner.h"
 #include "parser.h"
 
-char* token_names[] = { "Fin de Archivo" ,
-						"Identificador",
-						"Constante",
-						"Programa",
-						"Variables",
-						"Definir",
-						"Código",
-						"Leer",
-						"Escribir",
-						"Fin",
-						"Asignación",
-						"Puntuación"	
-						};
-
-/* Informa la ocurrencia de un error. */
-void yyerror(const char *s){
-	printf("Linea #%d: %s\n", yylineno, s);
-	return;
-}
-
 int main() {
-	switch( yyparse() ){
+	switch(yyparse()){
 	case 0:
-		printf("Compilación finalizada con éxito.\nErrores sintácticos: 0\tErrores léxicos: 0\n"); return 0;
+		printf("Compilación terminada con éxito.\nErrores sintácticos: %d - Errores léxicos: %d\n", yynerrs, elexemas); return 0;
 	case 1:
-		printf("Errores de compilación\nErrores sintácticos: 0\tErrores léxicos: 0\n"); return 1;
+		printf("Errores de compilación\nErrores sintácticos: %d - Errores léxicos: %d\n", yynerrs, elexemas); return 1;
 	case 2:
 		printf("Memoria insuficiente"); return 2;
 	}
 	return 0;
 }
-
-
