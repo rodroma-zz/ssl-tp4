@@ -35,7 +35,7 @@ listaSentencias : sentencia
                 | listaSentencias sentencia 
                 ;
 
-sentencia : IDENTIFICADOR ASIGNACION expresion ';'  { printf("asignaci髇\n"); }
+sentencia : IDENTIFICADOR ASIGNACION expresion ';'  { printf("asignaci贸n\n"); }
           | R_LEER '(' listaIdentificadores ')' ';' { printf("leer\n"); }
           | R_ESCRIBIR '(' listaExpresiones ')' ';' { printf("escribir\n"); }
           | error ';'
@@ -49,24 +49,15 @@ listaExpresiones : expresion
                  | listaExpresiones ',' expresion
                  ;
 
-expresion : termino
-          | expresion '+' termino { printf("suma\n"); }
-          | expresion '-' termino { printf("resta\n"); }
+expresion : expresion '*' expresion     { printf("multiplicaci贸n\n"); }
+          | expresion '/' expresion     { printf("divisi贸n\n"); }
+          | expresion '+' expresion     { printf("suma\n"); }
+          | expresion '-' expresion     { printf("resta\n"); }
+          | '-' expresion   %prec NEG   { printf("inversi贸n\n"); }
+          | IDENTIFICADOR
+          | CONSTANTE
+          | '(' expresion ')'           { printf("par茅ntesis\n"); }
           ;
-
-termino : factor
-        | termino '*' factor { printf("multiplicaci髇\n"); }
-        | termino '/' factor { printf("divisi髇\n"); }
-        ;
-
-factor : '-' primaria %prec NEG { printf("inversi髇\n"); }
-       | primaria
-       ;
-
-primaria : IDENTIFICADOR
-         | CONSTANTE
-         | '(' expresion ')'
-         ;
 
 %%
 int elexemas = 0;
